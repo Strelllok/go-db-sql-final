@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 )
 
 type ParcelStore struct {
@@ -68,10 +67,10 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 
 	err = rows.Err()
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
-	return res, nil
+	return res, err
   }
 
 func (s ParcelStore) SetStatus(number int, status string) error {

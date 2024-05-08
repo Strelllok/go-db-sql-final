@@ -48,8 +48,8 @@ func TestAddGetDelete(t *testing.T) {
     require.NoError(t, err)
 
     _, err = store.Get(id)
-    assert.Error(t, err)
-	assert.Equal(t, parcel, parcelFromDB)
+    require.Error(t, err)
+	assert.EqualError(t, err, sql.ErrNoRows.Error())
 
 }
 // TestSetAddress проверяет обновление адреса
@@ -91,7 +91,7 @@ func TestSetStatus(t *testing.T) {
 
 	parcelFromDB, err := store.Get(id)
 	require.NoError(t, err)
-	require.Equal(t, newStatus, parcelFromDB.Status)
+	assert.Equal(t, newStatus, parcelFromDB.Status)
 
 }
 
