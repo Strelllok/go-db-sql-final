@@ -70,7 +70,7 @@ func TestSetAddress(t *testing.T) {
 
 	parcelFromDB, err := store.Get(id)
 	assert.NoError(t, err)
-	assert.NotEqual(t, newAddress, parcelFromDB.Address)
+	assert.Equal(t, newAddress, parcelFromDB.Address)
 }
 
 // TestSetStatus проверяет обновление статуса
