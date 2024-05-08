@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 )
 
 type ParcelStore struct {
@@ -23,18 +22,12 @@ func (s ParcelStore) Add(p Parcel) (int, error) {
 	  sql.Named("created_at", p.CreatedAt))
 
 	if err != nil {
-	  return 0, err
+		fmt.Println(err)
+		return 0, err
 	}
+	index, _ := res.LastInsertId()
 
-	// верните идентификатор последней добавленной записи
-	lastId, err := res.LastInsertId()
-	if err != nil {
-	  log.Println(err)
-	  return 0, err
-
-	}
-
-	return int(lastId), nil
+	return int(index), nil
 }
 
 
@@ -76,18 +69,19 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 			return nil, err
 		}
 		if err = rows.Err(); err != nil {
-			res = append(res, res1)
+			return nil, err
 		}
+		res = append(res, res1)
 
 	}
-	return res, nil
+	return res, err
 }
 
 func (s ParcelStore) SetStatus(number int, status string) error {
 	// реализуйте обновление статуса в таблице parcel
-	_, err := s.db.Exec("UPDATE parcel SET number = :number WHERE status = :status",
-		sql.Named("number", number),
-		sql.Named("status", status))
+	_, err := s.db.Exec("UPDATE parcel SET status = :status WHERE number = :number",
+		sql.Named("status", status),
+		sql.Named("number", number))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -97,9 +91,9 @@ func (s ParcelStore) SetStatus(number int, status string) error {
 func (s ParcelStore) SetAddress(number int, address string) error {
 	// реализуйте обновление адреса в таблице parcel
 	// менять адрес можно только если значение статуса registered
-	_, err := s.db.Exec("UPDATE parcel SET number = :number WHERE address = :address",
-		sql.Named("number", number),
-		sql.Named("address", address))
+	_, err := s.db.Exec("UPDATE parcel SET address = :address WHERE number = :number",
+		sql.Named("address", address),
+		sql.Named("number", number))
 	if err != nil {
 		fmt.Println(err)
 	}
